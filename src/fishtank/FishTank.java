@@ -2,7 +2,6 @@ package fishtank;
 
 import javax.swing.*;
 import java.awt.*;
-import java.applet.*;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.awt.Graphics2D;  
@@ -12,7 +11,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.event.*;
 import javax.swing.ImageIcon;
 
-final public class Tester {
+final public class FishTank {
 
     JFrame frame;
     DrawPanel drawPanel;
@@ -24,427 +23,266 @@ final public class Tester {
     boolean down = true;
     boolean left = false;
     boolean right = true;
-
+    
+    fish[] fish_array = new fish[4];
+    fish[] fish_array_blue = new fish[4];
+    
+    bubble bubble_string = new bubble();
+    
     public static void main(String[] args) {
-        new Tester().go();
+        new FishTank().go();
     }
     
     private void go() {
-        frame = new JFrame("Test");
+        frame = new JFrame("FishTank");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         drawPanel = new DrawPanel();
+        
+        for(int i = 0; i < 4; i++){
+            fish_array[i] = new fish(new ImageIcon("02.gif").getImage(),
+                    310+(int)(Math.random()*512),250+(int)(Math.random()*244),
+                    new ImageIcon("02_left.gif").getImage()); //888 - 316 - 60 = 512     554 - 250 - 60 = 244
+            fish_array[i].start();
+        }
+        
+        for(int i = 0; i < 4; i++){
+            fish_array_blue[i] = new fish(new ImageIcon("03.gif").getImage(),
+                    310+(int)(Math.random()*512),250+(int)(Math.random()*244),
+                    new ImageIcon("03_left.gif").getImage()); //888 - 316 - 60 = 512     554 - 250 - 60 = 244
+            fish_array_blue[i].start();
+        }
 
+        bubble_string.start();
+        
+        //新建一个button
+        JButton bt = new JButton();
+        bt.setLocation(10, 100);
+        //添加监听
+        bt.addMouseMotionListener(new MouseAdapter(){  
+	       public void mouseMoved(MouseEvent e) {  
+	               bt .setToolTipText("你想要显示的内容");
+	           }
+        });
+                
         frame.getContentPane().add(BorderLayout.CENTER, drawPanel);
 
         frame.setVisible(true);
         frame.setResizable(false);
-        frame.setSize(300, 300);
-        frame.setLocation(375, 55);
-        moveIt();
-    }
-
-    class DrawPanel extends JPanel {
-        public void paintComponent(Graphics g) {
-        g.setColor(Color.BLACK);
-        int[] xPoints1 = {160,440,440,160};
-        int[] yPoints1 = {300,280,100,120};
-        g.drawPolygon(xPoints1,yPoints1,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(441, 100, 441, 280);
-        g.setColor(new Color(35,50,41));
-        g.drawLine(158, 300, 158, 120);
-        
-        g.setColor(Color.BLACK);
-        int[] xPoints2 = {160,100,100,160};
-        int[] yPoints2 = {120,80,260,300};
-        g.drawPolygon(xPoints2,yPoints2,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(99, 80, 99, 260);
-        
-        int[] xPoints3 = {158,96,96,158};
-        int[] yPoints3 = {298,256,276,318};
-        GradientPaint paint = new GradientPaint(96,260,new Color(66,66,68), 122,298,new Color(95,95,98), true);  
-        g2.setPaint(paint);
-        g2.fillPolygon(xPoints3,yPoints3,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(98, 258, 158, 298);
-        
-        g.setColor(new Color(8,5,20));
-        int[] xPoints4 = {158,444,444,158};
-        int[] yPoints4 = {298,277,295,318};
-        GradientPaint paint_ = new GradientPaint(158,298,new Color(8,5,20), 444,300,new Color(6,5,10), true);
-        g2.setPaint(paint_);
-        g2.fillPolygon(xPoints4,yPoints4,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(200, 296, 444, 277);
-        
-        int[] xPoints5 = {162,96,96,162};
-        int[] yPoints5 = {104,60,81,125};
-        GradientPaint paint1 = new GradientPaint(96,260,new Color(66,66,68), 122,298,new Color(95,95,98), true);  
-        g2.setPaint(paint1);
-        g2.fillPolygon(xPoints5,yPoints5,4);
-        
-        g.setColor(new Color(8,5,20));
-        int[] xPoints6 = {162,444,444,162};
-        int[] yPoints6 = {103,90,108,124};
-        GradientPaint paint2 = new GradientPaint(162,110,new Color(59,59,61), 444,108,new Color(19,18,23), true);
-        g2.setPaint(paint2);
-        g2.fillPolygon(xPoints6,yPoints6,4);
-        
-        int[] xPoints7 = {100,110,164,164};
-        int[] yPoints7 = {61,39,70,103};
-        GradientPaint paint3 = new GradientPaint(96,260,new Color(66,66,68), 122,298,new Color(95,95,98), true);  
-        g2.setPaint(paint3);
-        g2.fillPolygon(xPoints7,yPoints7,4);
-        g.setColor(new Color(225,231,231));
-        g.drawLine(110, 68, 162, 104);
-        
-        g.setColor(new Color(200,200,159));
-        g.drawLine(102, 62, 162, 104);
-        
-        int[] xPoints8 = {162,423,444,162};
-        int[] yPoints8 = {71,60,105,101};
-        GradientPaint paint4 = new GradientPaint(162,110,new Color(59,59,61), 444,108,new Color(19,18,23), true);
-        g2.setPaint(paint4);
-        g2.fillPolygon(xPoints8,yPoints8,4);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 90);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 88);
-        
-        int[] xPoints9 = {110,164,425,333};
-        int[] yPoints9 = {39,71,62,33};
-        GradientPaint paint5 = new GradientPaint(164,71,new Color(158,152,147), 350,35,new Color(121,121,121), true);
-        g2.setPaint(paint5);
-        g2.fillPolygon(xPoints9,yPoints9,4);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 90);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 88);
+        frame.setSize(1200, 800);
+        frame.setLocation(320, 115);
+        for(int i = 0; i < 4; i++){
+            fish_array[i].run();
         }
-    }
-
-    private void moveIt() {
-        while(true){
-            if(oneX >= 283){
-                right = false;
-                left = true;
-            }
-            if(oneX <= 7){
-                right = true;
-                left = false;
-            }
-            if(oneY >= 259){
-                up = true;
-                down = false;
-            }
-            if(oneY <= 7){
-                up = false;
-                down = true;
-            }
-            if(up){
-                oneY--;
-            }
-            if(down){
-                oneY++;
-            }
-            if(left){
-                oneX--;
-            }
-            if(right){
-                oneX++;
-            }
-            try{
-                Thread.sleep(10);
-            } catch (Exception exc){}
-            frame.repaint();
+        
+        for(int i = 0; i < 4; i++){
+            fish_array_blue[i].run();
         }
+        
+        bubble_string.run();
     }
-
-}
-
-/*
-public class FishTank extends Applet implements ActionListener{
     
-    Button button1;
-    boolean drawfish = false;
-    final int FEED_INITIAL_POSITION_X = 260;
-    final int FEED_INITIAL_POSITION_Y = 120;
-    final int BOTTOM = 270;
-    int times = 0;
-    feed myfeed = new feed();
-    fish[] fish_array = new fish[15];
-    
-    public void init() {
-        this.setSize(600,600);
-	setLayout(null);
-        Font mf = new Font("Courier",Font.BOLD,12);
-        this.setFont(mf);
-        button1 = new Button("Feeding!");
-        button1.setBounds(240,350,60,40);
-        add(button1);
-        button1.addActionListener(this);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button1 && !(drawfish)){
-            drawfish = true;
-            repaint(135,100,292,180);
-            try {
-                Thread.sleep(100);
-                } catch (InterruptedException interrupt){
-                interrupt.printStackTrace();
-                }
-        }
-        else
-            System.out.println("Button 2 was pressed");
-    }
-
-    public class feed{
-        int x_pos = FEED_INITIAL_POSITION_X;
-        int y_pos = FEED_INITIAL_POSITION_Y;
-        int move_distance = 10;        
-        public void feedMove(){
-            Thread thread = new Thread();
-            thread.start();
-            while(y_pos < BOTTOM){
-                y_pos = y_pos + move_distance;
-                repaint();
-                try {
-                Thread.sleep(1000);
-                } catch (InterruptedException e){
-                e.printStackTrace();
-                }
-            }
-        }
-    }
-    public class fish{
+    public class fish extends Thread{
         Image img;
         int x_pos;
         int y_pos;
-        public fish(Image im, int xp, int yp,String filename){
-            img = im;
+        char direction;
+        //Store image as backup
+        Image img_r; 
+        Image img_l;
+        
+        //Constructor to realize initialization
+        public fish(Image im_right, int xp, int yp,Image im_left){
             x_pos = xp;
             y_pos = yp;
-            Image ima = null;
-            if(x_pos<275){
-                ima = flip(filename);
-                img = new ImageIcon(ima).getImage();
+            img_r = im_right;
+            img_l = im_left;
+            if(x_pos>566){
+                img = im_left;
+                direction = 'l';
+            }
+            else{
+                img = im_right;
+                direction = 'r';
             }
         }
-        public void fish_move(){
-            
+        
+        @Override
+        public void run(){
+            while(true){
+                /* Use the Index after operator '+=' and '-='
+                and the parameter in the Thread.sleep() function
+                to control the fishs' moving speed 
+                */
+                if('l' == direction && x_pos >324) //move to the left
+                    x_pos-=5;
+                else if('r' == direction && x_pos <828) //move to the right [888 - 60]
+                    x_pos+=5;
+                else if('l' == direction && x_pos <= 324){ //Critical and turning direction
+                    img = img_r;
+                    direction = 'r';
+                }
+                else if('r' == direction && x_pos >= 828){ //Critical and turning direction
+                    img = img_l;
+                    direction = 'l';
+                }
+                try{
+                    Thread.sleep(100);
+                }catch (Exception exc){
+                    System.out.println ("Exception is caught");
+                }
+                frame.repaint();
+            }
         }
     }
-    public void paint(Graphics g){
-        Graphics2D g2 = (Graphics2D) g;
-        BasicStroke stroke = new BasicStroke(2);
-        g2.setStroke(stroke);
-        g.drawString("Only 1 time! Too much feed will affect fish health", 310, 375);
+    
+    public class bubble extends Thread{
+        int[] x_pos = new int[]{367,356,365,349,360,338};
+        int[] y_pos = new int[]{500,475,442,397,341,265};
+        int[] diameter = new int[]{15,20,28,38,56,70};
+        int leap = 0;
         
-        super.paint(g);
-        g.drawImage(new ImageIcon("timg2.png").getImage(), 153, 101, 294, 204, this);
-        g.drawImage(new ImageIcon("timg3.png").getImage(), 98, 63, 67, 257, this);
-        
-        if(true == drawfish){
-            g.drawImage(new ImageIcon("feed.png").getImage(), myfeed.x_pos, myfeed.y_pos+times*100, 50,30,this);
-            for(int i = 0; i < 15; i++){
-                fish_array[i] = new fish(new ImageIcon("fish.png").getImage(),135+(int)(Math.random()*292),100+(int)(Math.random()*180),"fish.png");
-                g.drawImage(fish_array[i].img, fish_array[i].x_pos,fish_array[i].y_pos, 25, 20, this);
+        public void run(){
+            while(true){
+                frame.repaint();
+                    if(leap<=5)
+                        leap++;
+                    else{
+                        leap = 0;
+                    }
+                    try{
+                        Thread.sleep(300);
+                    }catch (Exception exc){
+                            System.out.println ("Exception is caught");
+                    }
+                }
             }
-            times++;
+    }
+    
+    class DrawPanel extends JPanel {
+        public void paintComponent(Graphics g) {            
+            g.drawImage(new ImageIcon("Picture1.png").getImage(), 196, 126, 127, 505, this);
+            g.drawImage(new ImageIcon("Picture2.png").getImage(), 315, 205, 566, 405, this);
+            g.drawImage(new ImageIcon("stone.png").getImage(), 325, 480, 120, 80, this);
+            g.drawImage(flip("stone.png"), 600, 440, 80, 50, this);
+            g.drawImage(new ImageIcon("shell.gif").getImage(), 720, 465, 120,80,this);
+            
+            for(int i = 0; i < 4; i++)
+                g.drawImage(fish_array[i].img, fish_array[i].x_pos,fish_array[i].y_pos, 60, 60, this);
+            for(int i = 0; i < 4; i++)
+                g.drawImage(fish_array_blue[i].img, fish_array_blue[i].x_pos,fish_array_blue[i].y_pos, 60, 60, this);
+            
+            Graphics2D g2 = (Graphics2D) g;
+            BasicStroke stroke = new BasicStroke(2);
+            g2.setStroke(stroke);
+            
+                for(int i = 0; i < bubble_string.leap; i++){
+                    BasicStroke stroke1 = new BasicStroke(3);
+                    g2.setStroke(stroke1);
+                    g2.setColor(new Color(158,227,249,220));
+                    g2.fillOval(bubble_string.x_pos[i], bubble_string.y_pos[i], bubble_string.diameter[i], bubble_string.diameter[i]);
+                    g2.setColor(new Color(0,170,233));
+                    g2.drawOval(bubble_string.x_pos[i], bubble_string.y_pos[i], bubble_string.diameter[i], bubble_string.diameter[i]);
+                    BasicStroke stroke2 = new BasicStroke(2);
+                    g2.setStroke(stroke2);
+                    g2.setColor(new Color(254,253,255));
+                    g2.drawArc(bubble_string.x_pos[i]+(bubble_string.diameter[i]/8), 
+                            bubble_string.y_pos[i]+(bubble_string.diameter[i]/8), 
+                            bubble_string.diameter[i], bubble_string.diameter[i],118,50);
+                }
+            
+            //Surface [I] and simulate shading
+            g2.setColor(Color.BLACK);
+            int[] xPoints1 = {320,880,880,320};
+            int[] yPoints1 = {600,560,200,240};
+            g2.drawPolygon(xPoints1,yPoints1,4);
+            g.setColor(new Color(134,132,135));
+            g.drawLine(882, 200, 882, 560);
+            g.setColor(new Color(70,100,82));
+            g.drawLine(318, 600, 318, 240);
+        
+            //Surface [II] and simulate shading
+            g2.setColor(Color.BLACK);
+            int[] xPoints2 = {320,200,200,320};
+            int[] yPoints2 = {240,160,520,600};
+            g2.drawPolygon(xPoints2,yPoints2,4);
+            g.setColor(new Color(134,132,135));
+            g.drawLine(198, 160, 198, 520);
+            
+            //Base [III] and Gradient fill
+            int[] xPoints3 = {316,192,192,316};
+            int[] yPoints3 = {596,512,552,636};
+            GradientPaint paint = new GradientPaint(192,520,new Color(66,66,68),244,596,new Color(95,95,98), true);  
+            g2.setPaint(paint);
+            g2.fillPolygon(xPoints3,yPoints3,4);
+            g.setColor(new Color(134,132,135));
+            g.drawLine(196, 516, 316, 596);
+            
+            //Base [IV] and Gradient fill
+            g.setColor(new Color(8,5,20));
+            int[] xPoints4 = {316,888,888,316};
+            int[] yPoints4 = {596,554,590,636};
+            GradientPaint paint_ = new GradientPaint(316,596,new Color(8,5,20), 888,600,new Color(6,5,10), true);
+            g2.setPaint(paint_);
+            g2.fillPolygon(xPoints4,yPoints4,4);
+            g.setColor(new Color(134,132,135));
+            g.drawLine(400, 590, 888, 554);
+            
+            //Top Eage [V] and Gradient fill
+            int[] xPoints5 = {324,192,192,324};
+            int[] yPoints5 = {208,122,162,250};
+            GradientPaint paint1 = new GradientPaint(192,122,new Color(66,66,68), 244,240,new Color(95,95,98), true);  
+            g2.setPaint(paint1);
+            g2.fillPolygon(xPoints5,yPoints5,4);
+
+            //Top Eage [VI] and Gradient fill
+            g.setColor(new Color(8,5,20));
+            int[] xPoints6 = {324,888,888,324};
+            int[] yPoints6 = {208,180,216,250}; //CHANGE TWO INDEX! FIRST AND LAST
+            GradientPaint paint2 = new GradientPaint(162,110,new Color(59,59,61), 444,108,new Color(19,18,23), true);
+            g2.setPaint(paint2);
+            g2.fillPolygon(xPoints6,yPoints6,4);
+
+            //Top Surface [VII] and Gradient fill
+            int[] xPoints7 = {200,220,328,328};
+            int[] yPoints7 = {124,80,142,208};
+            GradientPaint paint3 = new GradientPaint(192,520,new Color(66,66,68), 244,596,new Color(95,95,98), true);  
+            g2.setPaint(paint3);
+            g2.fillPolygon(xPoints7,yPoints7,4);
+            g.setColor(new Color(225,231,231));
+            g.drawLine(220, 137, 324, 205);
+        
+            //the shading between [V] and [VII]
+            g.setColor(new Color(200,200,159));
+            g.drawLine(204, 127, 324, 208);
+            
+            //Top Surface [VIII] and Gradient fill
+            int[] xPoints8 = {328,846,888,328};
+            int[] yPoints8 = {142,124,176,206};
+            GradientPaint paint4 = new GradientPaint(324,220,new Color(59,59,61), 888,216,new Color(19,18,23), true);
+            g2.setPaint(paint4);
+            g2.fillPolygon(xPoints8,yPoints8,4);
+            g.setColor(new Color(182,180,155));
+            g.drawLine(326, 206, 888, 178);
+
+            //the shading between [VI] and [VIII]
+            g.setColor(new Color(182,180,155));
+            g.drawLine(326, 204, 888, 179);
+
+            //Top Surface
+            int[] xPoints9 = {220,328,846,666};
+            int[] yPoints9 = {80,142,124,66};
+            GradientPaint paint5 = new GradientPaint(328,142,new Color(132,130,128), 700,70,new Color(90,95,95), true);
+            g2.setPaint(paint5);
+            g2.fillPolygon(xPoints9,yPoints9,4);
+            g.setColor(new Color(182,180,155));
+            g.drawLine(322, 204, 876, 180);
+            g.setColor(new Color(182,180,155));
+            g.drawLine(322, 204, 876, 176);
         }
-        
-        g2.setColor(Color.BLACK);
-        int[] xPoints1 = {160,440,440,160};
-        int[] yPoints1 = {300,280,100,120};
-        g2.drawPolygon(xPoints1,yPoints1,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(441, 100, 441, 280);
-        g.setColor(new Color(35,50,41));
-        g.drawLine(158, 300, 158, 120);
-        
-        g2.setColor(Color.BLACK);
-        int[] xPoints2 = {160,100,100,160};
-        int[] yPoints2 = {120,80,260,300};
-        g2.drawPolygon(xPoints2,yPoints2,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(99, 80, 99, 260);
-        
-        int[] xPoints3 = {158,96,96,158};
-        int[] yPoints3 = {298,256,276,318};
-        GradientPaint paint = new GradientPaint(96,260,new Color(66,66,68), 122,298,new Color(95,95,98), true);  
-        g2.setPaint(paint);
-        g2.fillPolygon(xPoints3,yPoints3,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(98, 258, 158, 298);
-        
-        g.setColor(new Color(8,5,20));
-        int[] xPoints4 = {158,444,444,158};
-        int[] yPoints4 = {298,277,295,318};
-        GradientPaint paint_ = new GradientPaint(158,298,new Color(8,5,20), 444,300,new Color(6,5,10), true);
-        g2.setPaint(paint_);
-        g2.fillPolygon(xPoints4,yPoints4,4);
-        g.setColor(new Color(134,132,135));
-        g.drawLine(200, 296, 444, 277);
-        
-        int[] xPoints5 = {162,96,96,162};
-        int[] yPoints5 = {104,60,81,125};
-        GradientPaint paint1 = new GradientPaint(96,260,new Color(66,66,68), 122,298,new Color(95,95,98), true);  
-        g2.setPaint(paint1);
-        g2.fillPolygon(xPoints5,yPoints5,4);
-        
-        g.setColor(new Color(8,5,20));
-        int[] xPoints6 = {162,444,444,162};
-        int[] yPoints6 = {103,90,108,124};
-        GradientPaint paint2 = new GradientPaint(162,110,new Color(59,59,61), 444,108,new Color(19,18,23), true);
-        g2.setPaint(paint2);
-        g2.fillPolygon(xPoints6,yPoints6,4);
-        
-        int[] xPoints7 = {100,110,164,164};
-        int[] yPoints7 = {61,39,70,103};
-        GradientPaint paint3 = new GradientPaint(96,260,new Color(66,66,68), 122,298,new Color(95,95,98), true);  
-        g2.setPaint(paint3);
-        g2.fillPolygon(xPoints7,yPoints7,4);
-        g.setColor(new Color(225,231,231));
-        g.drawLine(110, 68, 162, 104);
-        
-        g.setColor(new Color(200,200,159));
-        g.drawLine(102, 62, 162, 104);
-        
-        int[] xPoints8 = {162,423,444,162};
-        int[] yPoints8 = {71,60,105,101};
-        GradientPaint paint4 = new GradientPaint(162,110,new Color(59,59,61), 444,108,new Color(19,18,23), true);
-        g2.setPaint(paint4);
-        g2.fillPolygon(xPoints8,yPoints8,4);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 90);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 88);
-        
-        int[] xPoints9 = {110,164,425,333};
-        int[] yPoints9 = {39,71,62,33};
-        GradientPaint paint5 = new GradientPaint(164,71,new Color(158,152,147), 350,35,new Color(121,121,121), true);
-        g2.setPaint(paint5);
-        g2.fillPolygon(xPoints9,yPoints9,4);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 90);
-        g.setColor(new Color(182,180,155));
-        g.drawLine(161, 102, 438, 88);
-        
-//        Toolkit t = Toolkit.getDefaultToolkit();
-//        Image i = t.getImage("timg1.png");
-//        BufferedImage bi=new BufferedImage(i.getWidth(null),i.getHeight(null),BufferedImage.TYPE_INT_ARGB);
-//        /*BufferedImage bi = toBufferedImage(i);
-//        /*BufferedImage bi1 = flipImage(bi);
-//        Graphics big = bi1.createGraphics(); 
-//        g.drawImage(bi, 120, 100, this);
-        
     }
    
-    public static BufferedImage toBufferedImage(Image image) {  
-        if (image instanceof BufferedImage) {  
-             return (BufferedImage)image;  
-        }                   
-        // 加载所有像素 
-        image = new ImageIcon(image).getImage();                    
-        BufferedImage bimage = null;  
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();  
-        try {                        
-             int transparency = Transparency.OPAQUE;                        
-             // 创建buffer图像  
-             GraphicsDevice gs = ge.getDefaultScreenDevice();  
-             GraphicsConfiguration gc = gs.getDefaultConfiguration();  
-             bimage = gc.createCompatibleImage(  
-             image.getWidth(null), image.getHeight(null), transparency);  
-        } catch (HeadlessException e) {  
-              e.printStackTrace(); 
-        }                   
-        if (bimage == null) {                         
-            int type = BufferedImage.TYPE_INT_ARGB;  
-            bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type); 
-        }                   
-        // 复制
-        Graphics g = bimage.createGraphics();                   
-        // 赋值  
-        g.drawImage(image,0,0,null);  
-        g.dispose();                    
-        return bimage;
-    } 
-    
-        /** 
-         * 旋转图片为指定角度 
-         *  
-         * @param bufferedimage 
-         *            目标图像 
-         * @param degree 
-         *            旋转角度 
-         * @return 
-         */  
-        public BufferedImage rotateImage(final BufferedImage bufferedimage,  
-                final int degree) {  
-            int w = bufferedimage.getWidth();  
-            int h = bufferedimage.getHeight();  
-            int type = bufferedimage.getColorModel().getTransparency();  
-            BufferedImage img;  
-            Graphics2D graphics2d;  
-            (graphics2d = (img = new BufferedImage(w, h, type)).createGraphics())  
-                    .setRenderingHint(RenderingHints.KEY_INTERPOLATION,  
-                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);  
-            graphics2d.rotate(Math.toRadians(degree), w / 2, h / 2);  
-            graphics2d.drawImage(bufferedimage, 0, 0, null);  
-            graphics2d.dispose();  
-            return img;  
-        }  
-
-        /** 
-         * 变更图像为指定大小 
-         *  
-         * @param bufferedimage 
-         *            目标图像 
-         * @param w 
-         *            宽 
-         * @param h 
-         *            高 
-         * @return 
-         */  
-        public  BufferedImage resizeImage(final BufferedImage bufferedimage,  
-                final int w, final int h) {  
-            int type = bufferedimage.getColorModel().getTransparency();  
-            BufferedImage img;  
-            Graphics2D graphics2d;  
-            (graphics2d = (img = new BufferedImage(w, h, type)).createGraphics())  
-                    .setRenderingHint(RenderingHints.KEY_INTERPOLATION,  
-                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);  
-            graphics2d.drawImage(bufferedimage, 0, 0, w, h, 0, 0,  
-                    bufferedimage.getWidth(), bufferedimage.getHeight(), null);  
-            graphics2d.dispose();  
-            return img;  
-        }  
-
-        /** 
-         * 水平翻转图像 
-         *  
-         * @param bufferedimage 
-         *            目标图像 
-         * @return 
-         */  
-        public BufferedImage flipImage(final BufferedImage bufferedimage) {  
-            int w = bufferedimage.getWidth();  
-            int h = bufferedimage.getHeight();  
-            BufferedImage img;  
-            Graphics2D graphics2d;  
-            (graphics2d = (img = new BufferedImage(w, h, bufferedimage  
-                    .getColorModel().getTransparency())).createGraphics())  
-                    .drawImage(bufferedimage, 0, 0, w, h, w, 0, 0, h, null);  
-            graphics2d.dispose();  
-            return img;  
-        }
-        
     public BufferedImage flip(String inputImageFilename) {
-
         try {
             BufferedImage inputImage = ImageIO.read(new File(inputImageFilename));
             BufferedImage outputImage = flipImage(inputImage);
@@ -453,30 +291,23 @@ public class FishTank extends Applet implements ActionListener{
             throw new RuntimeException(e);
         }
     }
-    
-    public void rotate(String inputImageFilename, double angle, String outputImageFilename) {
-
-        try {
-            BufferedImage inputImage = ImageIO.read(new File(inputImageFilename));
-            BufferedImage outputImage = rotateImage(inputImage, angle);
-            ImageIO.write(outputImage, "PNG", new File(outputImageFilename));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private BufferedImage rotateImage(BufferedImage sourceImage, double angle) {
-        int width = sourceImage.getWidth();
-        int height = sourceImage.getHeight();
-        BufferedImage destImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = destImage.createGraphics();
-
-        AffineTransform transform = new AffineTransform();
-        transform.rotate(angle / 180 * Math.PI, width / 2 , height / 2);
-        g2d.drawRenderedImage(sourceImage, transform);
-
-        g2d.dispose();
-        return destImage;
-    }
+        
+    /** 
+     * Horizontal flip image
+     *  
+     * @param bufferedimage 
+     *           Target Image 
+     * @return 
+     */  
+    public BufferedImage flipImage(final BufferedImage bufferedimage) {  
+        int w = bufferedimage.getWidth();  
+        int h = bufferedimage.getHeight();  
+        BufferedImage img;  
+        Graphics2D graphics2d;  
+        (graphics2d = (img = new BufferedImage(w, h, bufferedimage  
+                .getColorModel().getTransparency())).createGraphics())  
+                .drawImage(bufferedimage, 0, 0, w, h, w, 0, 0, h, null);  
+        graphics2d.dispose();  
+        return img;  
+    }    
 }
-*/
