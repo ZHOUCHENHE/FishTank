@@ -16,9 +16,6 @@ final public class FishTank {
     JFrame frame;
     DrawPanel drawPanel;
 
-    private int oneX = 7;
-    private int oneY = 7;
-
     boolean up = false;
     boolean down = true;
     boolean left = false;
@@ -28,6 +25,8 @@ final public class FishTank {
     fish[] fish_array_blue = new fish[4];
     
     bubble bubble_string = new bubble();
+    
+    Cat catk = new Cat();
     
     public static void main(String[] args) {
         new FishTank().go();
@@ -54,19 +53,9 @@ final public class FishTank {
         }
 
         bubble_string.start();
-        
-        //新建一个button
-        JButton bt = new JButton();
-        bt.setLocation(10, 100);
-        //添加监听
-        bt.addMouseMotionListener(new MouseAdapter(){  
-	       public void mouseMoved(MouseEvent e) {  
-	               bt .setToolTipText("你想要显示的内容");
-	           }
-        });
-                
+        catk.start();
         frame.getContentPane().add(BorderLayout.CENTER, drawPanel);
-
+        
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setSize(1200, 800);
@@ -176,20 +165,21 @@ final public class FishTank {
             BasicStroke stroke = new BasicStroke(2);
             g2.setStroke(stroke);
             
-                for(int i = 0; i < bubble_string.leap; i++){
-                    BasicStroke stroke1 = new BasicStroke(3);
-                    g2.setStroke(stroke1);
-                    g2.setColor(new Color(158,227,249,220));
-                    g2.fillOval(bubble_string.x_pos[i], bubble_string.y_pos[i], bubble_string.diameter[i], bubble_string.diameter[i]);
-                    g2.setColor(new Color(0,170,233));
-                    g2.drawOval(bubble_string.x_pos[i], bubble_string.y_pos[i], bubble_string.diameter[i], bubble_string.diameter[i]);
-                    BasicStroke stroke2 = new BasicStroke(2);
-                    g2.setStroke(stroke2);
-                    g2.setColor(new Color(254,253,255));
-                    g2.drawArc(bubble_string.x_pos[i]+(bubble_string.diameter[i]/8), 
-                            bubble_string.y_pos[i]+(bubble_string.diameter[i]/8), 
-                            bubble_string.diameter[i], bubble_string.diameter[i],118,50);
-                }
+            //Draw the rising bubble
+            for(int i = 0; i < bubble_string.leap; i++){
+                BasicStroke stroke1 = new BasicStroke(3);
+                g2.setStroke(stroke1);
+                g2.setColor(new Color(255,255,255,180));
+                g2.fillOval(bubble_string.x_pos[i], bubble_string.y_pos[i], bubble_string.diameter[i], bubble_string.diameter[i]);
+                g2.setColor(new Color(232,232,232));
+                g2.drawOval(bubble_string.x_pos[i], bubble_string.y_pos[i], bubble_string.diameter[i], bubble_string.diameter[i]);
+                BasicStroke stroke2 = new BasicStroke(2);
+                g2.setStroke(stroke2);
+                g2.setColor(new Color(254,253,255));
+                g2.drawArc(bubble_string.x_pos[i]+(bubble_string.diameter[i]/8), 
+                        bubble_string.y_pos[i]+(bubble_string.diameter[i]/8), 
+                        bubble_string.diameter[i], bubble_string.diameter[i],118,50);
+            }
             
             //Surface [I] and simulate shading
             g2.setColor(Color.BLACK);
@@ -249,11 +239,11 @@ final public class FishTank {
             GradientPaint paint3 = new GradientPaint(192,520,new Color(66,66,68), 244,596,new Color(95,95,98), true);  
             g2.setPaint(paint3);
             g2.fillPolygon(xPoints7,yPoints7,4);
-            g.setColor(new Color(225,231,231));
-            g.drawLine(220, 137, 324, 205);
+            g.setColor(new Color(120,120,120));
+            g.drawLine(193, 122, 324, 205);
         
             //the shading between [V] and [VII]
-            g.setColor(new Color(200,200,159));
+            g.setColor(new Color(120,120,120));
             g.drawLine(204, 127, 324, 208);
             
             //Top Surface [VIII] and Gradient fill
@@ -262,12 +252,12 @@ final public class FishTank {
             GradientPaint paint4 = new GradientPaint(324,220,new Color(59,59,61), 888,216,new Color(19,18,23), true);
             g2.setPaint(paint4);
             g2.fillPolygon(xPoints8,yPoints8,4);
-            g.setColor(new Color(182,180,155));
+            g.setColor(new Color(120,120,120));
             g.drawLine(326, 206, 888, 178);
 
             //the shading between [VI] and [VIII]
-            g.setColor(new Color(182,180,155));
-            g.drawLine(326, 204, 888, 179);
+            g.setColor(new Color(120,120,120));
+            g.drawLine(326, 206, 888, 180);
 
             //Top Surface
             int[] xPoints9 = {220,328,846,666};
@@ -275,13 +265,100 @@ final public class FishTank {
             GradientPaint paint5 = new GradientPaint(328,142,new Color(132,130,128), 700,70,new Color(90,95,95), true);
             g2.setPaint(paint5);
             g2.fillPolygon(xPoints9,yPoints9,4);
-            g.setColor(new Color(182,180,155));
-            g.drawLine(322, 204, 876, 180);
-            g.setColor(new Color(182,180,155));
-            g.drawLine(322, 204, 876, 176);
+            g.setColor(new Color(120,120,120));
+            g.drawLine(322, 207, 888, 180);
+            g.setColor(new Color(120,120,120));
+            g.drawLine(322, 207, 888, 177);
+            
+            //Draw the cat knight and its Hook
+            g.drawImage(new ImageIcon("cat_knight.png").getImage(), catk.x_pos, catk.y_pos,90,135, this);
+            g.drawImage(new ImageIcon("hook.png").getImage(), catk.x_pos_hook, catk.y_pos_hook,30,70, this);
         }
     }
    
+    public class Cat extends Thread{
+        int x_pos;
+        int y_pos;
+        int x_pos_hook;
+        int y_pos_hook;
+        final int hook_speed = 7;
+        final int step = 1;
+        boolean lock = false;
+        
+        //constructor to assign initial value
+        public Cat(){
+            x_pos = 500;
+            y_pos = 0;
+            x_pos_hook = x_pos;
+            y_pos_hook = y_pos + 240;
+        }
+        
+        public void run(){
+            while(true){
+                if(!(lock)){
+                    myEvent();
+                    frame.repaint();
+                }
+
+                if(lock){
+                    while(y_pos_hook<=424){ //494[end of fish appearing area] - 70
+                            y_pos_hook += hook_speed;
+                            try{
+                            Thread.sleep(100);
+                            }catch (Exception exc){
+                            System.out.println ("Exception is caught");
+                            frame.repaint();
+                            }
+                    }
+                    while(y_pos_hook>240){ //494[end of fish appearing area] - 70
+                            y_pos_hook -= hook_speed;
+                            try{
+                            Thread.sleep(50);
+                            }catch (Exception exc){
+                            System.out.println ("Exception is caught");
+                            frame.repaint();
+                            }
+                    }
+                    lock = false;
+                }
+                
+                try{
+                    Thread.sleep(300);
+                }catch (Exception exc){
+                    System.out.println ("Exception is caught");
+                }
+            }
+        }
+        
+        private void myEvent()
+        {
+            frame.addKeyListener(new KeyAdapter()//键盘监听按钮
+            {
+                @Override
+                public void keyPressed(KeyEvent e)
+                {
+                    if(e.getKeyCode()==KeyEvent.VK_LEFT){
+                        x_pos-=step;
+                        x_pos_hook = x_pos;
+                        System.out.println("left<-- : x_pos = " + x_pos);
+                        e = null;
+                    }
+                    else if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+                        x_pos+=step;
+                        x_pos_hook = x_pos;
+                        System.out.println("right--> x_pos = " + x_pos);
+                        e = null;
+                    }
+                    else if(e.getKeyCode()==KeyEvent.VK_ENTER){
+                        lock = true;
+                    }
+                    else
+                        e.consume();
+                }
+
+            });
+        }
+    }
     public BufferedImage flip(String inputImageFilename) {
         try {
             BufferedImage inputImage = ImageIO.read(new File(inputImageFilename));
